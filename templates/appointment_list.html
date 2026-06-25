@@ -1,0 +1,283 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#dfe9f3,#ffffff);
+}
+
+.container{
+    width:95%;
+    max-width:1300px;
+    margin:40px auto;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-bottom:30px;
+}
+
+.header h2{
+    color:#0d6efd;
+    font-size:35px;
+}
+
+.search-box input{
+    width:280px;
+    padding:12px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    outline:none;
+    transition:.3s;
+}
+
+.search-box input:focus{
+    border-color:#0d6efd;
+    box-shadow:0 0 8px rgba(13,110,253,.3);
+}
+
+.add-btn{
+    text-decoration:none;
+}
+
+.add-btn button{
+    background:#198754;
+    color:white;
+    border:none;
+    padding:12px 22px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    transition:.3s;
+}
+
+.add-btn button:hover{
+    background:#157347;
+    transform:translateY(-2px);
+}
+
+.table-card{
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 10px 25px rgba(0,0,0,.12);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+thead{
+    background:#0d6efd;
+    color:white;
+}
+
+th,td{
+    padding:18px;
+    text-align:center;
+}
+
+tbody tr:nth-child(even){
+    background:#f8f9fa;
+}
+
+tbody tr:hover{
+    background:#e7f1ff;
+    transition:.3s;
+}
+
+.status{
+    padding:6px 15px;
+    border-radius:20px;
+    color:white;
+    font-size:14px;
+    font-weight:bold;
+}
+
+.booked{
+    background:#0d6efd;
+}
+
+.completed{
+    background:#198754;
+}
+
+.cancelled{
+    background:#dc3545;
+}
+
+.action-btn{
+    padding:8px 15px;
+    border-radius:6px;
+    text-decoration:none;
+    color:white;
+    font-size:14px;
+    margin:2px;
+    display:inline-block;
+    transition:.3s;
+}
+
+.view{
+    background:#17a2b8;
+}
+
+.update{
+    background:#ffc107;
+    color:black;
+}
+
+.delete{
+    background:#dc3545;
+}
+
+.action-btn:hover{
+    transform:scale(1.08);
+}
+
+.empty{
+    padding:40px;
+    font-size:20px;
+    color:#777;
+}
+
+@media(max-width:900px){
+
+table{
+    display:block;
+    overflow-x:auto;
+}
+
+.header{
+    flex-direction:column;
+    gap:20px;
+}
+
+.search-box input{
+    width:100%;
+}
+
+}
+
+</style>
+
+<div class="container">
+
+<div class="header">
+
+<h2>🏥 Appointment List</h2>
+
+<div class="search-box">
+<input type="text" placeholder="🔍 Search Appointment...">
+</div>
+
+<a href="{% url 'appointment_create' %}" class="add-btn">
+<button>➕ Book Appointment</button>
+</a>
+
+</div>
+
+<div class="table-card">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+<th>Patient</th>
+<th>Doctor</th>
+<th>Department</th>
+<th>Status</th>
+<th>Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for appointment in appointments %}
+
+<tr>
+
+<td>{{ appointment.id }}</td>
+
+<td>{{ appointment.patient_name }}</td>
+
+<td>{{ appointment.doctor_name }}</td>
+
+<td>{{ appointment.department }}</td>
+
+<td>
+
+<span class="status
+{% if appointment.status == 'Booked' %}
+booked
+{% elif appointment.status == 'Completed' %}
+completed
+{% else %}
+cancelled
+{% endif %}
+">
+
+{{ appointment.status }}
+
+</span>
+
+</td>
+
+<td>
+
+<a href="{% url 'appointment_detail' appointment.id %}" class="action-btn view">
+👁 View
+</a>
+
+<a href="{% url 'appointment_update' appointment.id %}" class="action-btn update">
+✏ Update
+</a>
+
+<a href="{% url 'appointment_delete' appointment.id %}" class="action-btn delete">
+🗑 Delete
+</a>
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+<td colspan="6" class="empty">
+
+📅 No Appointments Available
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+{% endblock %}
